@@ -1,9 +1,13 @@
+/*jslint browser: true*/
+/*jslint node: true*/
+/*global $, jQuery, alert*/
+
 $(document).ready(function() {
 
     var selectedPiece = undefined;          /* [Holds the currently selected piece] @type {[JSON]} */
     var selectedPosition = undefined;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
-    var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[JSON]} */
+    var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
 
     $('td').on('click', function() {
         console.log($(this).find('span').attr('class'));
