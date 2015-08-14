@@ -33,6 +33,7 @@ $(document).ready(function() {
                 block.attr('data-piece', newPiece);
 
                 selectedPiece.find('span').removeClass(fullClass);
+                selectedPiece.removeClass('selected');
                 selectedPiece.find('span').attr('data-color', '');
                 selectedPiece.find('span').attr('data-piece', '');
 
@@ -45,6 +46,7 @@ $(document).ready(function() {
             if($(this).find('span').hasClass('glyphicon')) {
                 if($(this).find('span').attr('data-color') != lastMoveColor) {
                     selectedPiece = $(this);
+                    selectedPiece.addClass('selected');
                     fullClass = $(this).find('span').attr('class');
                     lastMoveColor = $(this).find('span').attr('data-color');
                 }
