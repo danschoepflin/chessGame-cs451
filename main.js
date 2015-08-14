@@ -13,10 +13,11 @@ $(document).ready(function() {
         if(selectedPiece != undefined) {
             selectedPosition = $(this);
 
-            var condition1 = selectedPiece.attr('id') != selectedPosition.attr('id');
-            var condition2 = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
+            var condition_selectingSamePiece = selectedPiece.attr('id') != selectedPosition.attr('id');
+            var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
+                //condition_selectingSameColor: Checking if the piece you're moving to is of the same color
 
-            if (condition1 && condition2) {
+            if (condition_selectingSamePiece && condition_selectingSameColor) {
                 var block = selectedPosition.find('span');
                 var tempClass = block.attr('class');
 
