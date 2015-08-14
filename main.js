@@ -13,8 +13,10 @@ $(document).ready(function() {
         if(selectedPiece != undefined) {
             selectedPosition = $(this);
 
-            var condition = selectedPiece.attr('id') != selectedPosition.attr('id');
-            if (condition) {
+            var condition1 = selectedPiece.attr('id') != selectedPosition.attr('id');
+            var condition2 = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
+
+            if (condition1 && condition2) {
                 var block = selectedPosition.find('span');
                 var tempClass = block.attr('class');
 
