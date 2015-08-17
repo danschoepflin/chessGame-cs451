@@ -10,30 +10,34 @@ $(document).ready(function() {
     var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
 
     $('td').on('click', function() {
-        console.log($(this).find('span').attr('class'));
-        console.log('lastMoveColor: ' + lastMoveColor);
-        console.log($(this).find('span').attr('data-color'));
         if(selectedPiece != undefined) {
-            console.log('selecting SECOND piece');
             selectedPosition = $(this);
 
-            console.log(selectedPiece);
-            console.log(selectedPosition);
+            var condition_selectingSamePiece = selectedPiece.attr('id') != selectedPosition.attr('id');
+            var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
+                //condition_selectingSameColor: Checking if the piece you're moving to is of the same color
 
-            var condition = selectedPiece.attr('id') != selectedPosition.attr('id');
-            console.log(condition);
-            if (condition) {
+            if (condition_selectingSamePiece && condition_selectingSameColor) {
                 var block = selectedPosition.find('span');
                 var tempClass = block.attr('class');
-                console.log('tempClass: ' + tempClass);
 
                 if (tempClass != undefined) {
-                    console.log('executing remove class');
                     block.removeClass(tempClass);
                 }
 
                 block.addClass(fullClass);
+                block.removeClass('unmoved');
+
+                var newColor = selectedPiece.find('span').data('color');
+                var newPiece = selectedPiece.find('span').data('piece');
+                block.attr('data-color', newColor);
+                block.attr('data-piece', newPiece);
+
                 selectedPiece.find('span').removeClass(fullClass);
+                selectedPiece.removeClass('selected');
+                selectedPiece.find('span').attr('data-color', '');
+                selectedPiece.find('span').attr('data-piece', '');
+
                 selectedPiece = undefined;
                 selectedPosition = undefined;
             }
@@ -43,10 +47,9 @@ $(document).ready(function() {
             if($(this).find('span').hasClass('glyphicon')) {
                 if($(this).find('span').attr('data-color') != lastMoveColor) {
                     selectedPiece = $(this);
+                    selectedPiece.addClass('selected');
                     fullClass = $(this).find('span').attr('class');
                     lastMoveColor = $(this).find('span').attr('data-color');
-                    $(this).find('span').attr('data-color', '');
-                    console.log(selectedPiece);
                 }
             }
         }
