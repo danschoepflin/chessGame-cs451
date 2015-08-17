@@ -55,3 +55,72 @@ $(document).ready(function() {
         }
     });
 });
+
+function isValidMove(board, pieceType, idNumberPiece, idNumberSpot)
+{
+    var spotIsEmpty = isSpotEmpty(board, idNumberSpot);
+    var idNumPiece = parseInt(idNumberPiece) + 1;
+    var rowPiece = idNumPiece/8;
+    var colPiece = idNumPiece % 8;
+
+    var idNumSpot = parseInt(idNumberSpot);
+    var rowSpot = idNumSpot/8;
+    var colSpot = idNumSpot % 8;
+
+    if((pieceType == "pawn") && (spotIsEmpty) && ((idNumPiece - 8 == idNumSpot) || (idNumPiece - 16 == idNumSpot)))
+    {
+        return true;
+    }
+
+    if((pieceType == "bishop") && (spotIsEmpty) && (isDiagonal(rowPiece, colPiece, rowSpot, colSpot)))
+    {
+        return true;
+    }
+
+    if((pieceType == "queen") && (spotIsEmpty) && (isDiagonal(rowPiece, colPiece, rowSpot, colSpot) || isVertical(rowPiece, colPiece, rowSpot, colSpot) || isHorizontal(rowPiece, colPiece, rowSpot, colSpot)))
+    {
+        return true;
+    }
+
+    if((pieceType == "king") && (spotIsEmpty) && ((Math.abs(rowPiece - rowSpot) <= 1 && Math.abs(colPiece - colSpot) <= 1)))
+    {
+        return true;
+    }
+
+    if((pieceType == "knight") && (spotIsEmpty) && ((Math.abs(xfrom - xto) == 1 && Math.abs(yfrom - yto) == 2) || (Math.abs(yfrom - yto) == 1 && Math.abs(xfrom - xto) == 2)))
+    {
+        return true;
+    }
+
+    if((pieceType == "tower") && (spotIsEmpty) && (isVertical(rowPiece, colPiece, rowSpot, colSpot) || isHorizontal(rowPiece, colPiece, rowSpot, colSpot)))
+    {
+        return true;
+    }
+
+
+    return false;
+}
+
+function isSpotEmpty(board, idNumberSpot)
+{
+    int idNumSpot = parseInt(idNumberSpot) + 1;
+    int rowSpot = idNumSpot/8;
+    int colSpot = idNumSpot % 8;
+
+    return board[rowSpot][colSpot] === "";
+}
+
+function isDiagonal(rowPiece, colPiece, rowSpot, colSpot)
+{
+    return (Math.abs(rowSpot - rowPiece) == Math.abs(colSpot - colPiece));
+}
+
+function isVertical(rowPiece, colPiece, rowSpot, colSpot)
+{
+    return (rowPiece == rowSpot && colPiece != colSpot);
+}
+
+function isHorizontal(rowPiece, colPiece, rowSpot, colSpot)
+{
+    return (colPiece == colSpot && rowPiece != rowSpot);
+}
