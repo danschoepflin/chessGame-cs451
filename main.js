@@ -16,8 +16,16 @@ $(document).ready(function() {
             var condition_selectingSamePiece = selectedPiece.attr('id') != selectedPosition.attr('id');
             var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
                 //condition_selectingSameColor: Checking if the piece you're moving to is of the same color
-            if (condition_selectingSamePiece && condition_selectingSameColor) 
-            {
+            if (!condition_selectingSamePiece) {
+                selectedPiece.removeClass('selected');
+                selectedPiece = undefined;
+                selectedPosition = undefined;
+                if (lastMoveColor == 'white') {
+                    lastMoveColor = 'black';
+                } else {
+                    lastMoveColor = 'white';
+                }
+            } else if (condition_selectingSamePiece && condition_selectingSameColor) {
                 board = getCurrentBoard();
                 var pieceType = selectedPiece.find("span").attr('data-piece');
                 var idNumberPiece = selectedPiece.attr('id');
