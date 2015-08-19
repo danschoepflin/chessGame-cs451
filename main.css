@@ -26,6 +26,7 @@ a {
 }
 
 #chess_board {
+    display: inline-block;
     margin-left: 1em;
     border:5px solid #333;
 }
