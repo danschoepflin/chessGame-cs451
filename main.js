@@ -164,6 +164,13 @@ $(document).ready(function() {
             }
         }
     });
+
+    $(window).bind('beforeunload',function(){
+        var c = confirm('Are you sure you want to reload this page?\nYou will lose this state of the board and have to restart!');
+        if (c) {
+            $('body').trigger('endGame');
+        }
+    });
 });
 
 function isValidMove(board, pieceType, idNumberPiece, idNumberSpot)
