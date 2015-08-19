@@ -9,6 +9,100 @@ $(document).ready(function() {
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
     var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
 
+    createTable();
+
+    function createTable() {
+        var newHtml = '';
+        newHtml = newHtml + '<table id="chess_board" style="display: none;">';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="0"><span data-color="black" data-piece="tower" class="unmoved black glyphicon glyphicon-tower"></span></td>';
+        newHtml = newHtml + '<td id="1"><span data-color="black" data-piece="knight" class="unmoved black glyphicon glyphicon-knight"></span></td>';
+        newHtml = newHtml + '<td id="2"><span data-color="black" data-piece="bishop" class="unmoved black glyphicon glyphicon-bishop"></span></td>';
+        newHtml = newHtml + '<td id="3"><span data-color="black" data-piece="queen" class="unmoved black glyphicon glyphicon-queen"></span></td>';
+        newHtml = newHtml + '<td id="4"><span data-color="black" data-piece="king" class="unmoved black glyphicon glyphicon-king"></span></td>';
+        newHtml = newHtml + '<td id="5"><span data-color="black" data-piece="bishop" class="unmoved black glyphicon glyphicon-bishop"></span></td>';
+        newHtml = newHtml + '<td id="6"><span data-color="black" data-piece="knight" class="unmoved black glyphicon glyphicon-knight"></span></td>';
+        newHtml = newHtml + '<td id="7"><span data-color="black" data-piece="tower" class="unmoved black glyphicon glyphicon-tower"></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="8"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="9"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="10"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="11"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="12"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="13"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="14"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="15"><span data-color="black" data-piece="pawn" class="unmoved black pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="16"><span></span></td>';
+        newHtml = newHtml + '<td id="17"><span></span></td>';
+        newHtml = newHtml + '<td id="18"><span></span></td>';
+        newHtml = newHtml + '<td id="19"><span></span></td>';
+        newHtml = newHtml + '<td id="20"><span></span></td>';
+        newHtml = newHtml + '<td id="21"><span></span></td>';
+        newHtml = newHtml + '<td id="22"><span></span></td>';
+        newHtml = newHtml + '<td id="23"><span></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="24"><span></span></td>';
+        newHtml = newHtml + '<td id="25"><span></span></td>';
+        newHtml = newHtml + '<td id="26"><span></span></td>';
+        newHtml = newHtml + '<td id="27"><span></span></td>';
+        newHtml = newHtml + '<td id="28"><span></span></td>';
+        newHtml = newHtml + '<td id="29"><span></span></td>';
+        newHtml = newHtml + '<td id="30"><span></span></td>';
+        newHtml = newHtml + '<td id="31"><span></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="32"><span></span></td>';
+        newHtml = newHtml + '<td id="33"><span></span></td>';
+        newHtml = newHtml + '<td id="34"><span></span></td>';
+        newHtml = newHtml + '<td id="35"><span></span></td>';
+        newHtml = newHtml + '<td id="36"><span></span></td>';
+        newHtml = newHtml + '<td id="37"><span></span></td>';
+        newHtml = newHtml + '<td id="38"><span></span></td>';
+        newHtml = newHtml + '<td id="39"><span></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="40"><span></span></td>';
+        newHtml = newHtml + '<td id="41"><span></span></td>';
+        newHtml = newHtml + '<td id="42"><span></span></td>';
+        newHtml = newHtml + '<td id="43"><span></span></td>';
+        newHtml = newHtml + '<td id="44"><span></span></td>';
+        newHtml = newHtml + '<td id="45"><span></span></td>';
+        newHtml = newHtml + '<td id="46"><span></span></td>';
+        newHtml = newHtml + '<td id="47"><span></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="48"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="49"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="50"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="51"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="52"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="53"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="54"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '<td id="55"><span data-color="white" data-piece="pawn" class="unmoved white pawn glyphicon glyphicon-pawn"></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '<tr>';
+        newHtml = newHtml + '<td id="56"><span data-color="white" data-piece="tower" class="unmoved white glyphicon glyphicon-tower"></span></td>';
+        newHtml = newHtml + '<td id="57"><span data-color="white" data-piece="knight" class="unmoved white glyphicon glyphicon-knight"></span></td>';
+        newHtml = newHtml + '<td id="58"><span data-color="white" data-piece="bishop" class="unmoved white glyphicon glyphicon-bishop"></span></td>';
+        newHtml = newHtml + '<td id="59"><span data-color="white" data-piece="queen" class="unmoved white glyphicon glyphicon-queen"></span></td>';
+        newHtml = newHtml + '<td id="60"><span data-color="white" data-piece="king" class="unmoved white glyphicon glyphicon-king"></span></td>';
+        newHtml = newHtml + '<td id="61"><span data-color="white" data-piece="bishop" class="unmoved white glyphicon glyphicon-bishop"></span></td>';
+        newHtml = newHtml + '<td id="62"><span data-color="white" data-piece="knight" class="unmoved white glyphicon glyphicon-knight"></span></td>';
+        newHtml = newHtml + '<td id="63"><span data-color="white" data-piece="tower" class="unmoved white glyphicon glyphicon-tower"></span></td>';
+        newHtml = newHtml + '</tr>';
+        newHtml = newHtml + '</table>';
+        $('body').append(newHtml);
+    }
+
+    $('.startButton').on('click', function(event) {
+        $('.startButton').remove();
+        $('table').fadeIn('400');
+    });
+
     $('td').on('click', function() {
         if(selectedPiece != undefined) {
             selectedPosition = $(this);

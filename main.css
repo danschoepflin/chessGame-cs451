@@ -9,7 +9,26 @@ a {
     width:80px;
 }
 
-#chess_board { border:5px solid #333; }
+.openingButton {
+    display: block;
+    margin: auto;
+    border: none;
+    background-color: #084FBB;
+    color: white;
+    border-radius: 7px;
+    margin-top: 1em;
+    font-size: 2em;
+    opacity: 0.8;
+}
+
+.startButton:hover {
+    opacity: 1;
+}
+
+#chess_board {
+    margin-left: 1em;
+    border:5px solid #333;
+}
 
 td {
     background:#fff;
