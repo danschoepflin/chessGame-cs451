@@ -95,12 +95,25 @@ $(document).ready(function() {
         newHtml = newHtml + '<td id="63"><span data-color="white" data-piece="tower" class="unmoved white glyphicon glyphicon-tower"></span></td>';
         newHtml = newHtml + '</tr>';
         newHtml = newHtml + '</table>';
-        $('body').append(newHtml);
+        $('.tableColumn').append(newHtml);
+
     }
 
     $('.startButton').on('click', function(event) {
+        $('body').trigger('startGame');
+        var forfeitButton = '<button class="forfeitButton">Forfeit</button>';
+
         $('.startButton').remove();
         $('table').fadeIn('400');
+        $('.forfeitButtonDiv').append(forfeitButton);
+    });
+
+    $('body').on('click', '.forfeitButton', function(event) {
+        console.log(getBoardAsHTML());
+        var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');
+        if (c) {
+            $('body').trigger('endGame');
+        }
     });
 
     $('td').on('click', function() {
@@ -165,11 +178,23 @@ $(document).ready(function() {
         }
     });
 
-    $(window).on('beforeunload',function(){
-        var c = confirm('Are you sure you want to reload this page?\nYou will lose this state of the board and have to restart!');
-        if (c) {
-            $('body').trigger('endGame');
-        }
+    function getBoardAsJQuery() {
+        var table = $('table');
+        return table;
+    }
+
+    function getBoardAsJSON() {
+        var table = $('table')[0];
+        return table;
+    }
+
+    function getBoardAsHTML() {
+        var table = $('table')[0].outerHTML;
+        return table;
+    }
+
+    $(window).bind('beforeunload',function(){
+        return 'Are you sure you want to reload this page?\n\nYou will lose this state of the board and have to restart!';
     });
 });
 

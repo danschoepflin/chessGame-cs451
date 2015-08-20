@@ -9,6 +9,16 @@ a {
     width:80px;
 }
 
+button:focus,
+button:visited,
+button:active {
+    outline: none;
+}
+
+.gameFeatures {
+    padding: 5em 0;
+}
+
 .openingButton {
     display: block;
     margin: auto;
@@ -22,6 +32,19 @@ a {
 }
 
 .startButton:hover {
+    opacity: 1;
+}
+
+.forfeitButton {
+    border: none;
+    border-radius: 7px;
+    color: white;
+    background-color: #EF0000;
+    font-size: 2em;
+    opacity: 0.5;
+}
+
+.forfeitButton:hover {
     opacity: 1;
 }
 
