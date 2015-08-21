@@ -106,6 +106,7 @@ $(document).ready(function() {
         $('.startButton').remove();
         $('table').fadeIn('400');
         $('.forfeitButtonDiv').append(forfeitButton);
+        runTimer();
     });
 
     $('body').on('click', '.forfeitButton', function(event) {
@@ -179,6 +180,20 @@ $(document).ready(function() {
             }
         }
     });
+
+	
+	function runTimer() {
+	
+	    var timer = $('.timer').FlipClock(1320, {
+		clockFace: 'MinuteCounter',
+		countdown: true,
+		callbacks: {
+			stop: function() {
+		    	$('.message').html('The clock has stopped!');
+		    }
+		}
+		});
+	}
 
     function getBoardAsJQuery() {
         var table = $('table');
