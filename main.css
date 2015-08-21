@@ -19,7 +19,8 @@ button:active {
     padding: 5em 0;
 }
 
-.openingButton {
+.openingButton,
+.saveButton {
     display: block;
     margin: auto;
     border: none;

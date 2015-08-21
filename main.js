@@ -9,6 +9,9 @@ $(document).ready(function() {
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
     var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
 
+    Parse.initialize("W7MogVvTat6u5JoXgo4qP5qqB5ldvH4sWrvPmkB3", "oCxcrfx1IJ8yBz24rxkRBiAuh7xbOxe5ycJ5Gh8C");
+
+
     createTable();
 
     function createTable() {
@@ -102,10 +105,12 @@ $(document).ready(function() {
     $('.startButton').on('click', function(event) {
         $('body').trigger('startGame');
         var forfeitButton = '<button class="forfeitButton">Forfeit</button>';
+        var saveButton = '<button class="saveButton">Save</button>';
 
         $('.openingButton').remove();
         $('table').fadeIn('400');
         $('.forfeitButtonDiv').append(forfeitButton);
+        $('.saveButtonDiv').append(saveButton);
         runTimer();
     });
 
@@ -115,6 +120,49 @@ $(document).ready(function() {
         if (c) {
             $('body').trigger('endGame');
         }
+    });
+
+    $('body').on('click', '.saveButton', function(event) {
+        var c = confirm('Are you sure you want to QUIT the game and SAVE it for later?');
+        // var currentBoardState = getBoardAsHTML();
+        // var boardJSON = {};
+        // boardJSON["savedBoard"] = currentBoardState;
+        if (c) {
+            var ChessBoard = Parse.Object.extend("ChessBoard");
+            var board = new ChessBoard();
+
+            board.set("savedBoard", getBoardAsHTML());
+
+            board.save(null, {
+                success: function(board) {
+                    // Execute any logic that should take place after the object is saved.
+                    alert('New object created with objectId: ' + board.id);
+                },
+                error: function(board, error) {
+                    // Execute any logic that should take place if the save fails.
+                    // error is a Parse.Error with an error code and message.
+                    alert('Failed to create new object, with error code: ' + error.message);
+                }
+            });
+        }
+    });
+
+    $('body').on('click', '.loadButton', function(event) {
+        var ChessBoard = Parse.Object.extend("ChessBoard");
+        var query = new Parse.Query(ChessBoard);
+        query.get("PuFlUTKRY9", {
+            success: function(board) {
+                var newBoard = board.get("savedBoard");
+                console.log(newBoard);
+                $('table').remove();
+                $('.tableColumn').append(newBoard);
+                $('.startButton').trigger('click');
+            },
+            error: function(object, error) {
+            // The object was not retrieved successfully.
+            // error is a Parse.Error with an error code and message.
+            }
+        });
     });
 
     $('td').on('click', function() {
