@@ -144,28 +144,28 @@ $(document).ready(function() {
                  {
                      var block = selectedPosition.find('span');
                      var tempClass = block.attr('class');
-             
+
                      if (tempClass != undefined) {
                          block.removeClass(tempClass);
                      }
-             
+
                      block.addClass(fullClass);
                      block.removeClass('unmoved');
-             
+
                      var newColor = selectedPiece.find('span').data('color');
                      var newPiece = selectedPiece.find('span').data('piece');
                      block.attr('data-color', newColor);
                      block.attr('data-piece', newPiece);
-             
+
                      selectedPiece.find('span').removeClass(fullClass);
                      selectedPiece.removeClass('selected');
                      selectedPiece.find('span').attr('data-color', '');
                      selectedPiece.find('span').attr('data-piece', '');
-             
+
                      selectedPiece = undefined;
                      selectedPosition = undefined;
                  }
-             
+
              }
 
         } else {
@@ -181,19 +181,18 @@ $(document).ready(function() {
         }
     });
 
-	
-	function runTimer() {
-	
-	    var timer = $('.timer').FlipClock(1320, {
-		clockFace: 'MinuteCounter',
-		countdown: true,
-		callbacks: {
-			stop: function() {
-		    	$('.message').html('The clock has stopped!');
-		    }
-		}
-		});
-	}
+
+    function runTimer() {
+        var timer = $('.timer').FlipClock(1320, {
+            clockFace: 'MinuteCounter',
+            countdown: true,
+            callbacks: {
+                stop: function() {
+                    $('.message').html('The clock has stopped!');
+                }
+            }
+        });
+    }
 
     function getBoardAsJQuery() {
         var table = $('table');
@@ -246,7 +245,7 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
         {
             firstMove = (Math.abs(rowSpot - rowPiece) == 1);
         }
-        
+
         if(!isBackwards(pieceColor, unmoved, rowPiece, rowSpot))
         {
             return false;
@@ -311,13 +310,13 @@ function isHorizontal(rowPiece, colPiece, rowSpot, colSpot)
     return (colPiece == colSpot && rowPiece != rowSpot);
 }
 
-function validDirection(color, colPiece, colSpot) 
+function validDirection(color, colPiece, colSpot)
 {
     if(color == "white")
     {
         return colPiece <= colSpot;
     }
-    
+
     return colPiece >= colSpot;
 }
 
@@ -331,7 +330,7 @@ function isBackwards(pieceColor, unmoved, rowPiece, rowSpot)
     {
         return rowSpot - rowPiece == 1 || rowSpot - rowPiece != 1;
     }
-    
+
     return rowSpot - rowPiece == 1;
 }
 
@@ -378,7 +377,7 @@ function isPieceInPath(board, direction, rowPiece, colPiece, rowSpot, colSpot)
                 return true;
             }
             rowPiece += 1;
-        }  
+        }
     }
     return false;
 }
