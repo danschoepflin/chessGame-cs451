@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chesstacular Bonanza</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="main.css">
+
+        <script src="main.js"></script>
+    
+    </head>
+    <body>
+        <button class="openingButton startButton">Start Game</button>
+		
+        <button class="openingButton startButton">Enter key</button>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 tableColumn"></div>
+                <div class="col-md-offset-2 col-md-4 gameFeatures">
+                    <div class="timer"></div>
+                    <div class="forfeitButtonDiv"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="websocket.js"></script>
+        <script type="text/javascript" src="chessboard.js"></script>
+    </body>
+</html>
