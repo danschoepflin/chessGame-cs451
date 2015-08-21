@@ -124,9 +124,7 @@ $(document).ready(function() {
 
     $('body').on('click', '.saveButton', function(event) {
         var c = confirm('Are you sure you want to QUIT the game and SAVE it for later?');
-        // var currentBoardState = getBoardAsHTML();
-        // var boardJSON = {};
-        // boardJSON["savedBoard"] = currentBoardState;
+
         if (c) {
             var ChessBoard = Parse.Object.extend("ChessBoard");
             var board = new ChessBoard();
@@ -136,7 +134,7 @@ $(document).ready(function() {
             board.save(null, {
                 success: function(board) {
                     // Execute any logic that should take place after the object is saved.
-                    alert('New object created with objectId: ' + board.id);
+                    alert('Please save this key to load this game later: \n' + board.id);
                 },
                 error: function(board, error) {
                     // Execute any logic that should take place if the save fails.
@@ -150,7 +148,8 @@ $(document).ready(function() {
     $('body').on('click', '.loadButton', function(event) {
         var ChessBoard = Parse.Object.extend("ChessBoard");
         var query = new Parse.Query(ChessBoard);
-        query.get("PuFlUTKRY9", {
+        var key = window.prompt("Please enter you key her:", "[key]")
+        query.get(key, {
             success: function(board) {
                 var newBoard = board.get("savedBoard");
                 console.log(newBoard);
