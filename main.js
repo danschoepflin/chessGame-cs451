@@ -14,6 +14,11 @@ $(document).ready(function() {
 
     createTable();
 
+    /**
+     * [Function that created the chess board table to start the game.]
+     *  NOTE:  This function is only for starting a new game. If loadGame is chosen, the table is pulled from the database
+     *         and appended to the column.
+     */
     function createTable() {
         var newHtml = '';
         newHtml = newHtml + '<table id="chess_board" style="display: none;">';
@@ -99,13 +104,16 @@ $(document).ready(function() {
         newHtml = newHtml + '</tr>';
         newHtml = newHtml + '</table>';
         $('.tableColumn').append(newHtml);
-
     }
 
+    /**
+     * [Listening for a click on the .startButton. Clicking this removes the opening screen and creates the game screen]
+     * @triggers: startGame {body} [Event triggered to notify that the game has been started]
+     */
     $('.startButton').on('click', function(event) {
         $('body').trigger('startGame');
-        var forfeitButton = '<button class="forfeitButton">Forfeit</button>';
-        var saveButton = '<button class="saveButton">Save</button>';
+        var forfeitButton = '<button class="forfeitButton">Forfeit</button>';   /* [Holds the button HTML for the forfeitButton] */
+        var saveButton = '<button class="saveButton">Save</button>';            /* [Holds the button HTML for the saveButton] */
 
         $('.openingButton').remove();
         $('table').fadeIn('400');
@@ -114,23 +122,31 @@ $(document).ready(function() {
         runTimer();
     });
 
+    /**
+     * [Listening for a click on the .forfeitButton. Clicking this ends the game(without saving it) and takes the user to the end screen]
+     * @triggers: endGame {body} [Event triggered to notify that endGame condition has been met]
+     */
     $('body').on('click', '.forfeitButton', function(event) {
         console.log(getBoardAsHTML());
-        var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');
+        var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');     /* Holding the boolean return based on what the user chose */
         if (c) {
             $('body').trigger('endGame');
         }
     });
 
+    /**
+     * [Listening for a click on the .saveButton. Clicking this saves the current table to the database which can be retrieved on load.]
+     * NOTE: This also gives the user a key which is specific to the board they saved to retrieve their saved game later.
+     * @triggers: none;
+     */
     $('body').on('click', '.saveButton', function(event) {
-        var c = confirm('Are you sure you want to QUIT the game and SAVE it for later?');
+        var c = confirm('Are you sure you want to QUIT the game and SAVE it for later?');   /* Holding the boolean return based on what the user chose */
 
         if (c) {
-            var ChessBoard = Parse.Object.extend("ChessBoard");
-            var board = new ChessBoard();
+            var ChessBoard = Parse.Object.extend("ChessBoard");     /* Creating a subclass of the class ChessBoard */
+            var board = new ChessBoard();                           /* Creating a new Object of this subclass ChessBoard */
 
             board.set("savedBoard", getBoardAsHTML());
-
             board.save(null, {
                 success: function(board) {
                     // Execute any logic that should take place after the object is saved.
@@ -139,16 +155,21 @@ $(document).ready(function() {
                 error: function(board, error) {
                     // Execute any logic that should take place if the save fails.
                     // error is a Parse.Error with an error code and message.
-                    alert('Failed to create new object, with error code: ' + error.message);
+                    alert('Save Failed: ' + error.message);
                 }
             });
         }
     });
 
+    /**
+     * [Listening for a click on the .loadButton. Clicking this allows the user to load an already saved board.]
+     * NOTE: This also a key from the user which is specific to the board they saved.
+     * @triggers: click {.startButton} [Triggers this click to render the board that has been loaded]
+     */
     $('body').on('click', '.loadButton', function(event) {
-        var ChessBoard = Parse.Object.extend("ChessBoard");
-        var query = new Parse.Query(ChessBoard);
-        var key = window.prompt("Please enter you key her:", "[key]")
+        var ChessBoard = Parse.Object.extend("ChessBoard");             /* Creating a subclass of the class ChessBoard */
+        var query = new Parse.Query(ChessBoard);                        /* Creating a new Query Object of this subclass ChessBoard */
+        var key = window.prompt("Please enter you key her:", "[key]")   /* Taking the key input from the user */
         query.get(key, {
             success: function(board) {
                 var newBoard = board.get("savedBoard");
@@ -164,13 +185,19 @@ $(document).ready(function() {
         });
     });
 
+    /**
+     * [Detecting click on the pieces/spaces on the board. This is also calling the moveValidation to check if a move is valid or not
+     *  and performing moves based on the return from isValidMove()]
+     */
     $('td').on('click', function() {
         if(selectedPiece != undefined) {
             selectedPosition = $(this);
 
             var condition_selectingSamePiece = selectedPiece.attr('id') != selectedPosition.attr('id');
+            /* Same piece selected or not */
             var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
-                //condition_selectingSameColor: Checking if the piece you're moving to is of the same color
+            /* Same color selected or not */
+
             if (!condition_selectingSamePiece) {
                 selectedPiece.removeClass('selected');
                 selectedPiece = undefined;
@@ -204,6 +231,7 @@ $(document).ready(function() {
                      block.attr('data-color', newColor);
                      block.attr('data-piece', newPiece);
 
+                     /* Resetting the board to have no selectedPiece and selectedPosition and removing all their attributes. */
                      selectedPiece.find('span').removeClass(fullClass);
                      selectedPiece.removeClass('selected');
                      selectedPiece.find('span').attr('data-color', '');
@@ -228,7 +256,9 @@ $(document).ready(function() {
         }
     });
 
-
+    /**
+     * [Creates the flipclock]
+     */
     function runTimer() {
         var timer = $('.timer').FlipClock(1320, {
             clockFace: 'MinuteCounter',
@@ -241,21 +271,36 @@ $(document).ready(function() {
         });
     }
 
+    /**
+     * [Return the current state of the table as a jQuery object]
+     * @return {[Object]} [A jQuery object of the table]
+     */
     function getBoardAsJQuery() {
         var table = $('table');
         return table;
     }
 
+    /**
+     * [Return the current state of the table as a JSON object]
+     * @return {[JSON]} [A JSON object of the table]
+     */
     function getBoardAsJSON() {
         var table = $('table')[0];
         return table;
     }
 
+    /**
+     * [Return the current state of the table as a HTML string]
+     * @return {[String]} [The table HTML as a string]
+     */
     function getBoardAsHTML() {
         var table = $('table')[0].outerHTML;
         return table;
     }
 
+    /**
+     * [Confirms on refresh whether the user wants to leave the game or not]
+     */
     $(window).bind('beforeunload',function(){
         return 'Are you sure you want to reload this page?\n\nYou will lose this state of the board and have to restart!';
     });
