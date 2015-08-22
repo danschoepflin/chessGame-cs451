@@ -1,12 +1,14 @@
 function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot)
 {
-    var idNumPiece = parseInt(idNumberPiece) + 1;
-    var rowPiece = Math.ceil(idNumPiece/8) - 1;
-    var colPiece = (idNumPiece % 8) - 1;
+    //Changed from adding 1 and subtracting 1 and using ceiling to simply use floor.
+    //Makes it easier to read and easier use.
+    var idNumPiece = parseInt(idNumberPiece);
+    var rowPiece = Math.floor(idNumPiece/8);
+    var colPiece = (idNumPiece % 8);
 
-    var idNumSpot = parseInt(idNumberSpot) + 1;
-    var rowSpot = Math.ceil(idNumSpot/8) - 1;
-    var colSpot = (idNumSpot % 8) - 1;
+    var idNumSpot = parseInt(idNumberSpot);
+    var rowSpot = Math.floor(idNumSpot/8);
+    var colSpot = (idNumSpot % 8);
 
     if(pieceType == "pawn")
     {
@@ -48,12 +50,56 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
 
     if((pieceType == "bishop") && (isDiagonal(rowPiece, colPiece, rowSpot, colSpot)))
     {
+        if (rowSpot < rowPiece && colSpot < colPiece && isPieceInPath(board, "NW", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (rowSpot < rowPiece && colSpot > colPiece && isPieceInPath(board, "NE", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot < colPiece && rowSpot > rowPiece && isPieceInPath(board, "SW", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot > colPiece && rowSpot > rowPiece && isPieceInPath(board, "SE", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
         return true;
     }
 
     if((pieceType == "queen") && (isDiagonal(rowPiece, colPiece, rowSpot, colSpot) || isVertical(rowPiece, colPiece, rowSpot, colSpot) || isHorizontal(rowPiece, colPiece, rowSpot, colSpot)))
     {
-        if (isPieceInPath(board, "forward", rowPiece, colPiece, rowSpot, colSpot))
+        if (rowSpot > rowPiece && colSpot == colPiece && isPieceInPath(board, "forward", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (rowSpot < rowPiece && colSpot == colPiece && isPieceInPath(board, "backward", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot > colPiece && rowSpot == rowPiece && isPieceInPath(board, "right", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot < colPiece && rowSpot == rowPiece && isPieceInPath(board, "left", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (rowSpot < rowPiece && colSpot < colPiece && isPieceInPath(board, "NW", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (rowSpot < rowPiece && colSpot > colPiece && isPieceInPath(board, "NE", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot < colPiece && rowSpot > rowPiece && isPieceInPath(board, "SW", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot > colPiece && rowSpot > rowPiece && isPieceInPath(board, "SE", rowPiece, colPiece, rowSpot, colSpot))
         {
             return false
         }
@@ -72,6 +118,22 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
 
     if((pieceType == "tower") && (isVertical(rowPiece, colPiece, rowSpot, colSpot) || isHorizontal(rowPiece, colPiece, rowSpot, colSpot)))
     {
+        if (rowSpot > rowPiece && colSpot == colPiece && isPieceInPath(board, "forward", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (rowSpot < rowPiece && colSpot == colPiece && isPieceInPath(board, "backward", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot > colPiece && rowSpot == rowPiece && isPieceInPath(board, "right", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
+        if (colSpot < colPiece && rowSpot == rowPiece && isPieceInPath(board, "left", rowPiece, colPiece, rowSpot, colSpot))
+        {
+            return false
+        }
         return true;
     }
 
@@ -91,11 +153,12 @@ function isVertical(rowPiece, colPiece, rowSpot, colSpot)
 
 function isHorizontal(rowPiece, colPiece, rowSpot, colSpot)
 {
-    return (colPiece == colSpot && rowPiece != rowSpot);
+    return (rowPiece == rowSpot && colPiece != colSpot);
 }
 
 function validDirection(color, colPiece, colSpot)
 {
+    //Should this be involving rows?
     if(color == "white")
     {
         return colPiece <= colSpot;
@@ -123,27 +186,29 @@ function isCaptureTerritory(board, rowPiece, colPiece, pieceColor)
     var row = rowPiece;
     var col = colPiece;
     var oppositePieceColor = pieceColor == "white" ? "black" : "white";
+    
+    //Added checks below to ensure that pieces are capturable by pawns without exceeding boundaries
     if(board[row][col].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row + 1][col + 1].indexOf(oppositePieceColor) > -1)
+    if(row + 1 < 8 && col + 1 < 8 &&board[row + 1][col + 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row - 1][col + 1].indexOf(oppositePieceColor) > -1)
+    if(row - 1 >= 0 && col + 1 < 8 && board[row - 1][col + 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row + 1][col - 1].indexOf(oppositePieceColor) > -1)
+    if(row + 1 < 8 && col - 1 >= 0 && board[row + 1][col - 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row - 1][col - 1].indexOf(oppositePieceColor) > -1)
+    if(row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
@@ -152,15 +217,110 @@ function isCaptureTerritory(board, rowPiece, colPiece, pieceColor)
 
 function isPieceInPath(board, direction, rowPiece, colPiece, rowSpot, colSpot)
 {
+    
     if(direction == "forward")
     {
-        while(rowPiece != rowSpot)
+        var rowPiece2 = rowPiece + 1;
+        while(rowPiece2 !== rowSpot)
         {
-            if(board[rowPiece][colPiece] != "")
+            if(board[rowPiece2][colPiece] != "")
             {
                 return true;
             }
-            rowPiece += 1;
+            rowPiece2 += 1;
+        }
+    }
+    if(direction == "backward")
+    {
+        var rowPiece2 = rowPiece - 1;
+        while(rowPiece2 !== rowSpot)
+        {
+            if(board[rowPiece2][colPiece] != "")
+            {
+                return true;
+            }
+            rowPiece2 -= 1;
+        }
+    }
+    if(direction == "left")
+    {
+        var colPiece2 = colPiece - 1;
+        while(colPiece2 !== colSpot)
+        {
+            if(board[rowPiece][colPiece2] != "")
+            {
+                return true;
+            }
+            colPiece2 -= 1;
+        }
+    }
+    if(direction == "right")
+    {
+        var colPiece2 = colPiece + 1;
+        while(colPiece2 !== colSpot)
+        {
+            if(board[rowPiece][colPiece2] != "")
+            {
+                return true;
+            }
+            colPiece2 += 1;
+        }
+    }
+    
+    if(direction == "NW")
+    {
+        var rowPiece2 = rowPiece - 1;
+        var colPiece2 = colPiece - 1;
+        while(rowPiece2 !== rowSpot)
+        {
+            if(board[rowPiece2][colPiece2] != "")
+            {
+                return true;
+            }
+            rowPiece2 -= 1;
+            colPiece2 -= 1;
+        }
+    }
+    if(direction == "NE")
+    {
+        var rowPiece2 = rowPiece - 1;
+        var colPiece2 = colPiece + 1;
+        while(rowPiece2 !== rowSpot)
+        {
+            if(board[rowPiece2][colPiece2] != "")
+            {
+                return true;
+            }
+            rowPiece2 -= 1;
+            colPiece2 += 1;
+        }
+    }
+    if(direction == "SW")
+    {
+        var rowPiece2 = rowPiece + 1;
+        var colPiece2 = colPiece - 1;
+        while(colPiece2 !== colSpot)
+        {
+            if(board[rowPiece2][colPiece2] != "")
+            {
+                return true;
+            }
+            colPiece2 -= 1;
+            rowPiece2 += 1;
+        }
+    }
+    if(direction == "SE")
+    {
+        var colPiece2 = colPiece + 1;
+        var rowPiece2 = rowPiece + 1;
+        while(colPiece2 !== colSpot)
+        {
+            if(board[rowPiece2][colPiece2] != "")
+            {
+                return true;
+            }
+            colPiece2 += 1;
+            rowPiece2 += 1;
         }
     }
     return false;
