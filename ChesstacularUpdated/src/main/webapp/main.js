@@ -19,15 +19,110 @@ function updateChat(newText) {
     $('.chatData').append('<p>\n\n<span class="opponentText">Opponent:</span>' + json.chat + '</p>');
 }
 
-function redrawChessboard(board) {
+function redrawChessboard(jsonboard) {
     var selectedPiece = undefined;          /* [Holds the currently selected piece] @type {[JSON]} */
     var selectedPosition = undefined;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
     var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
-    var json = JSON.parse(board);
-    if(typeof json.chessboard === 'undefined')
+    var json = JSON.parse(jsonboard);
+    if(typeof json.chessboard === 'undefined') {
         return;
+    }
     $("#chess_board").replaceWith(json.chessboard);
+    
+    var checkFound = false;
+    var kingWhiteID = 0;
+    var kingBlackID = 0;
+    var unmoved = false;
+    board = getCurrentBoard();
+
+    for (row = 0; row < 8; row++)
+    {
+        for (col = 0; col < 8; col++)
+        {
+                var piece = board[row][col];
+                var name = piece.substr(6);
+                var color = piece.substring(0,5);
+
+                if (name === "king")
+                {
+                        if (kingBlackID === 0)
+                        {
+                                if (color === "black")
+                                {
+                                        kingBlackID = (row * 8) + col;   
+                                }   
+                                else
+                                {
+                                        kingWhiteID = (row * 8) + col;  
+                                }             			
+                        }
+                        else
+                        {
+                                kingWhiteID = (row * 8) + col;
+                        }
+
+                }
+        }
+    }
+
+    // Again from all spots in the board, if the space holds an item that isn't a king, run inCheck based on both of the kings.
+    // As soon as we find a check situation, save this to use later.
+
+    for (var row = 0; row < 8; row++)
+    {
+        for (var col = 0; col < 8; col++)
+        {
+            var piece = board[row][col];
+            var name = piece.substr(6);
+            var color = piece.substring(0,5);
+            var unmoved = true;
+            var pieceID = (row * 8) + col;  
+
+            if (name != "king")
+            {
+                kingWhiteID = kingWhiteID + '';
+                pieceID = pieceID + '';
+
+                // check for check with white king
+                if (color === "black")
+                {
+                    if (isCheck(board, name, color, unmoved, pieceID, kingWhiteID))
+                    {
+                        window.alert("The white king is in check by the " + name + " at " + pieceID);
+                    }
+                    else
+                    {
+                        checkFound = false;
+                    }
+
+                }
+
+                // check for check with black king
+                if (color === "white")
+                {
+                    if (isCheck(board, name, color, unmoved, pieceID, kingBlackID))
+                    {
+                        window.alert("The black king is in check by the " + name + " at " + pieceID);
+                        checkFound = true;
+                    }
+                    else
+                    {
+                        checkFound = false;
+                    }
+                }
+            }
+        }                    	
+        if (checkFound)
+        {
+            $(".check").show();
+        }
+        else
+        {
+            $(".check").hide();
+        }
+    }
+  
     $('td').on('click', function() {
         if(selectedPiece != undefined) {
             selectedPosition = $(this);
@@ -87,8 +182,8 @@ function redrawChessboard(board) {
                 "lastMoveColor" : lastMoveColor
             });
             sendText(jsonToSend);
-            
-        } else {
+        }
+        else {
             console.log('selecting first piece');
             if($(this).find('span').hasClass('glyphicon')) {
                 if($(this).find('span').attr('data-color') != lastMoveColor && (typeof myMoveColor === 'undefined' || $(this).find('span').attr('data-color') === myMoveColor)) {
@@ -293,8 +388,110 @@ $(document).ready(function() {
                 "lastMoveColor" : lastMoveColor
             });
             sendText(json);
+            
+            
+            
+           // CHECK STUFF
+           // For all spaces in the board, check if a king is there.
+           // When you find the kings, save their IDs.
 
-        } else {
+           window.alert("looking!");
+
+           var checkFound = false;
+           var kingWhiteID = 0;
+           var kingBlackID = 0;
+           var unmoved = false;
+           board = getCurrentBoard();
+
+           for (row = 0; row < 8; row++)
+           {
+               for (col = 0; col < 8; col++)
+               {
+                       var piece = board[row][col];
+                       var name = piece.substr(6);
+                       var color = piece.substring(0,5);
+
+                       if (name === "king")
+                       {
+                               if (kingBlackID === 0)
+                               {
+                                       if (color === "black")
+                                       {
+                                               kingBlackID = (row * 8) + col;   
+                                       }   
+                                       else
+                                       {
+                                               kingWhiteID = (row * 8) + col;  
+                                       }             			
+                               }
+                               else
+                               {
+                                       kingWhiteID = (row * 8) + col;
+                               }
+
+                       }
+               }
+           }
+
+           // Again from all spots in the board, if the space holds an item that isn't a king, run inCheck based on both of the kings.
+           // As soon as we find a check situation, save this to use later.
+
+           for (var row = 0; row < 8; row++)
+           {
+               for (var col = 0; col < 8; col++)
+               {
+                    var piece = board[row][col];
+                    var name = piece.substr(6);
+                    var color = piece.substring(0,5);
+                    var unmoved = true;
+                    var pieceID = (row * 8) + col;  
+
+                    if (name != "king")
+                    {
+                        kingWhiteID = kingWhiteID + '';
+                        pieceID = pieceID + '';
+
+                        // check for check with white king
+                        if (color === "black")
+                        {
+                            if (isCheck(board, name, color, unmoved, pieceID, kingWhiteID))
+                            {
+                                window.alert("The white king is in check by the " + name + " at " + pieceID);
+                            }
+                            else
+                            {
+                                checkFound = false;
+                            }
+
+                        }
+
+                        // check for check with black king
+                        if (color === "white")
+                        {
+                            if (isCheck(board, name, color, unmoved, pieceID, kingBlackID))
+                            {
+                                window.alert("The black king is in check by the " + name + " at " + pieceID);
+                                checkFound = true;
+                            }
+                            else
+                            {
+                                checkFound = false;
+                            }
+                        }
+                    }
+                }                    	
+                if (checkFound)
+                {
+                    $(".check").show();
+                }
+                else
+                {
+                    $(".check").hide();
+                }
+            }
+        }
+
+        else {
             console.log('selecting first piece');
             if($(this).find('span').hasClass('glyphicon')) {
                 if($(this).find('span').attr('data-color') != lastMoveColor && (typeof myMoveColor  === 'undefined' || $(this).find('span').attr('data-color') === myMoveColor)) {

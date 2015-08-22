@@ -1,3 +1,51 @@
+function isCheck(board, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot)
+{
+	// make new board without the king we're looking for there
+	
+	var newBoard = $.extend(true,board);
+	var idNumSpot = parseInt(idNumberSpot);
+    var rowSpot = Math.floor(idNumSpot/8);
+    var colSpot = (idNumSpot % 8);
+    var idNumPiece = parseInt(idNumberPiece);
+    
+    // check if that space is now a valid move
+	newBoard[rowSpot][colSpot] = "";
+	
+	// handle special pawn rules
+	if(isValidMove(newBoard, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot))
+	{
+		if (pieceType === "pawn")
+		{
+			if (pieceColor === "white")
+			{
+				if ( (idNumSpot === (idNumPiece - 7)) ||  (idNumSpot === (idNumPiece - 9)) )
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			if (pieceColor === "black")
+			{
+				if ( (idNumSpot === (idNumPiece + 7)) ||  (idNumSpot === (idNumPiece + 9)) )
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			return (isValidMove(newBoard, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot));
+		}
+	}
+}
+
 function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot)
 {
     //Changed from adding 1 and subtracting 1 and using ceiling to simply use floor.
