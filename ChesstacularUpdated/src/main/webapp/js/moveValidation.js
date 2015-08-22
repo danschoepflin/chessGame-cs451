@@ -1,12 +1,19 @@
 function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot)
 {
-    var idNumPiece = parseInt(idNumberPiece) + 1;
-    var rowPiece = Math.ceil(idNumPiece/8) - 1;
-    var colPiece = (idNumPiece % 8) - 1;
+    //Changed from adding 1 and subtracting 1 and using ceiling to simply use floor.
+    //Makes it easier to read and easier use.
+    var idNumPiece = parseInt(idNumberPiece);
+    var rowPiece = Math.floor(idNumPiece/8);
+    var colPiece = (idNumPiece % 8);
 
-    var idNumSpot = parseInt(idNumberSpot) + 1;
-    var rowSpot = Math.ceil(idNumSpot/8) - 1;
-    var colSpot = (idNumSpot % 8) - 1;
+    var idNumSpot = parseInt(idNumberSpot);
+    var rowSpot = Math.floor(idNumSpot/8);
+    var colSpot = (idNumSpot % 8);
+    console.log('rowPiece' + rowSpot);
+    console.log('colPiece' + colSpot);
+
+    console.log('rowspot' + rowSpot);
+    console.log('colSpot' + colSpot);
 
     if(pieceType == "pawn")
     {
@@ -123,27 +130,29 @@ function isCaptureTerritory(board, rowPiece, colPiece, pieceColor)
     var row = rowPiece;
     var col = colPiece;
     var oppositePieceColor = pieceColor == "white" ? "black" : "white";
+    
+    //Added checks below to ensure that pieces are capturable by pawns without exceeding boundaries
     if(board[row][col].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row + 1][col + 1].indexOf(oppositePieceColor) > -1)
+    if(row + 1 < 8 && col + 1 < 8 &&board[row + 1][col + 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row - 1][col + 1].indexOf(oppositePieceColor) > -1)
+    if(row - 1 >= 0 && col + 1 < 8 && board[row - 1][col + 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row + 1][col - 1].indexOf(oppositePieceColor) > -1)
+    if(row + 1 < 8 && col - 1 >= 0 && board[row + 1][col - 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
 
-    if(board[row - 1][col - 1].indexOf(oppositePieceColor) > -1)
+    if(row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1].indexOf(oppositePieceColor) > -1)
     {
         return true;
     }
