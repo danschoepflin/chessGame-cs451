@@ -13,7 +13,6 @@ var chessboard;
 var myMoveColor = undefined;
 
 function updateChat(newText) {
-    console.log("Forced to display chat");
     var json = JSON.parse(newText);
     if(typeof json.chat === 'undefined')
         return;
@@ -21,7 +20,6 @@ function updateChat(newText) {
 }
 
 function redrawChessboard(board) {
-    console.log("Forced to redraw");
     var selectedPiece = undefined;          /* [Holds the currently selected piece] @type {[JSON]} */
     var selectedPosition = undefined;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
@@ -58,7 +56,6 @@ function redrawChessboard(board) {
                  var isFirstMove = selectedPiece.find("span").hasClass('unmoved') ? true : false;
                 if(isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
                 {
-                    console.log('was valid');
                     var block = selectedPosition.find('span');
                     var tempClass = block.attr('class');
 
