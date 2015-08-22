@@ -117,6 +117,7 @@ $(document).ready(function() {
 
         $('.openingButton').remove();
         $('table').fadeIn('400');
+        $('.chat').fadeIn('400');
         $('.forfeitButtonDiv').append(forfeitButton);
         $('.saveButtonDiv').append(saveButton);
         runTimer();
