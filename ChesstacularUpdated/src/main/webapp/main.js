@@ -94,7 +94,7 @@ function redrawChessboard(jsonboard) {
                         if (myMoveColor == "black")
                         {
                             window.alert("Black wins!");
-                            // END GAME HERE FOR BOTH PLAYERS
+                            $('body').trigger('endGame');
                         }
                     }
                     else
@@ -113,7 +113,7 @@ function redrawChessboard(jsonboard) {
                         if (myMoveColor == "white")
                         {
                             window.alert("White wins!");
-                            // END GAME HERE FOR BOTH PLAYERS
+                            $('body').trigger('endGame');
                         }
                     }
                     else
