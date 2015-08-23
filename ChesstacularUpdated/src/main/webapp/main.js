@@ -11,6 +11,22 @@
 
 var chessboard;
 var myMoveColor = undefined;
+var timer;
+
+function notifyEndGame(winner) {
+    var json = JSON.parse(winner);
+    if(typeof json.winner === 'undefined')
+        return;
+    console.log('notifying end game');
+    console.log(json.winner);
+    if(json.winner === "black") {
+        window.alert("Black wins!");
+        $('body').trigger('endGame');
+    } else {
+        window.alert("White wins!");
+        $('body').trigger('endGame');
+    }
+}
 
 function updateChat(newText) {
     var json = JSON.parse(newText);
@@ -28,6 +44,7 @@ function redrawChessboard(jsonboard) {
     if(typeof json.chessboard === 'undefined') {
         return;
     }
+    timer.start();
     $("#chess_board").replaceWith(json.chessboard);
     
     var checkFound = false;
@@ -94,6 +111,10 @@ function redrawChessboard(jsonboard) {
                         if (myMoveColor == "black")
                         {
                             window.alert("Black wins!");
+                            var jsonToSend = JSON.stringify({
+                                "winner" : "black"
+                            });
+                            sendText(jsonToSend);
                             $('body').trigger('endGame');
                         }
                     }
@@ -114,6 +135,10 @@ function redrawChessboard(jsonboard) {
                         {
                             window.alert("White wins!");
                             $('body').trigger('endGame');
+                            var jsonToSend = JSON.stringify({
+                                "winner" : "white"
+                            });
+                            sendText(jsonToSend);
                         }
                     }
                     else
@@ -134,6 +159,7 @@ function redrawChessboard(jsonboard) {
     }
   
     $('td').on('click', function() {
+        timer.start();
         if(selectedPiece != undefined) {
             selectedPosition = $(this);
 
@@ -183,15 +209,17 @@ function redrawChessboard(jsonboard) {
 
                     selectedPiece = undefined;
                     selectedPosition = undefined;
+                    console.log('Piece selected');
+                    
+                    var jsonToSend = JSON.stringify({
+                        "chessboard" : getBoardAsHTML(),
+                        "lastMoveColor" : lastMoveColor
+                    });
+                    sendText(jsonToSend);
+                    timer.stop();
                 }
 
             }
-            console.log('Piece selected');
-            var jsonToSend = JSON.stringify({
-                "chessboard" : getBoardAsHTML(),
-                "lastMoveColor" : lastMoveColor
-            });
-            sendText(jsonToSend);
         }
         else {
             console.log('selecting first piece');
@@ -321,13 +349,22 @@ $(document).ready(function() {
         var chatAreas = '<textarea class="textEntry" rows="4" cols="50">Welcome to Chesstacular Bonanza!  Type here for the chat!</textarea><div class="chatData"><p>Chat text will appear here!</p></div>';
         chatDiv.append(chatAreas);
         runTimer();
+        timer.stop();
     });
 
     $('body').on('click', '.forfeitButton', function(event) {
-        console.log(getBoardAsHTML());
         var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');
         if (c) {
             $('body').trigger('endGame');
+            var colorToSend;
+            if(myMoveColor === "white")
+                colorToSend = "black";
+            else
+                colorToSend = "white";
+            var jsonToSend = JSON.stringify({
+                "winner" : colorToSend
+            });
+            sendText(jsonToSend);
         }
     });
 
@@ -342,6 +379,7 @@ $(document).ready(function() {
     });
 
     $('td').on('click', function() {
+        timer.start();
         if(selectedPiece != undefined) {
             selectedPosition = $(this);
 
@@ -357,49 +395,46 @@ $(document).ready(function() {
                 } else {
                     lastMoveColor = 'white';
                 }
-            }  else if (condition_selectingSamePiece && condition_selectingSameColor) {
-                 board = getCurrentBoard();
-                 var pieceType = selectedPiece.find("span").attr('data-piece');
-                 var idNumberPiece = selectedPiece.attr('id');
-                 var idNumberSpot = selectedPosition.attr('id');
-                 var color = selectedPiece.find("span").attr('data-color');
-                 var isFirstMove = selectedPiece.find("span").hasClass('unmoved') ? true : false;
-                 if(isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
-                 {
-                     var block = selectedPosition.find('span');
-                     var tempClass = block.attr('class');
+            } else if (condition_selectingSamePiece && condition_selectingSameColor) {
+                board = getCurrentBoard();
+                var pieceType = selectedPiece.find("span").attr('data-piece');
+                var idNumberPiece = selectedPiece.attr('id');
+                var idNumberSpot = selectedPosition.attr('id');
+                var color = selectedPiece.find("span").attr('data-color');
+                var isFirstMove = selectedPiece.find("span").hasClass('unmoved') ? true : false;
+                if(isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
+                {
+                    var block = selectedPosition.find('span');
+                    var tempClass = block.attr('class');
 
-                     if (tempClass != undefined) {
-                         block.removeClass(tempClass);
-                     }
+                    if (tempClass != undefined) {
+                        block.removeClass(tempClass);
+                    }
 
-                     block.addClass(fullClass);
-                     block.removeClass('unmoved');
+                    block.addClass(fullClass);
+                    block.removeClass('unmoved');
 
-                     var newColor = selectedPiece.find('span').data('color');
-                     var newPiece = selectedPiece.find('span').data('piece');
-                     block.attr('data-color', newColor);
-                     block.attr('data-piece', newPiece);
+                    var newColor = selectedPiece.find('span').data('color');
+                    var newPiece = selectedPiece.find('span').data('piece');
+                    block.attr('data-color', newColor);
+                    block.attr('data-piece', newPiece);
 
-                     selectedPiece.find('span').removeClass(fullClass);
-                     selectedPiece.removeClass('selected');
-                     selectedPiece.find('span').attr('data-color', '');
-                     selectedPiece.find('span').attr('data-piece', '');
+                    selectedPiece.find('span').removeClass(fullClass);
+                    selectedPiece.removeClass('selected');
+                    selectedPiece.find('span').attr('data-color', '');
+                    selectedPiece.find('span').attr('data-piece', '');
 
-                     selectedPiece = undefined;
-                     selectedPosition = undefined;
-                 }
-
-             }
-
-            console.log('Piece selected');
-            var json = JSON.stringify({
-                "chessboard" : getBoardAsHTML(),
-                "lastMoveColor" : lastMoveColor
-            });
-            sendText(json);
-            
-            
+                    selectedPiece = undefined;
+                    selectedPosition = undefined;
+                    var json = JSON.stringify({
+                        "chessboard" : getBoardAsHTML(),
+                        "lastMoveColor" : lastMoveColor
+                    });
+                    sendText(json);
+                    timer.stop();
+                }
+            }
+            console.log('Piece selected');           
             
            // CHECK STUFF
            // For all spaces in the board, check if a king is there.
@@ -516,7 +551,7 @@ $(document).ready(function() {
 
 
     function runTimer() {
-        var timer = $('.timer').FlipClock(1320, {
+        timer = $('.timer').FlipClock(1320, {
             clockFace: 'MinuteCounter',
             countdown: true,
             callbacks: {

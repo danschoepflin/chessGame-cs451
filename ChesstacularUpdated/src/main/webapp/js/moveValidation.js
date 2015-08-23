@@ -1,9 +1,9 @@
 function isCheck(board, pieceType, pieceColor, unmoved, idNumberPiece, idNumberSpot)
 {
-	// make new board without the king we're looking for there
-	
-	var newBoard = $.extend(true,board);
-	var idNumSpot = parseInt(idNumberSpot);
+    // make new board without the king we're looking for there
+
+    var newBoard = $.extend(true,board);
+    var idNumSpot = parseInt(idNumberSpot);
     var rowSpot = Math.floor(idNumSpot/8);
     var colSpot = (idNumSpot % 8);
     var idNumPiece = parseInt(idNumberPiece);
@@ -100,19 +100,19 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
     {
         if (rowSpot < rowPiece && colSpot < colPiece && isPieceInPath(board, "NW", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (rowSpot < rowPiece && colSpot > colPiece && isPieceInPath(board, "NE", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot < colPiece && rowSpot > rowPiece && isPieceInPath(board, "SW", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot > colPiece && rowSpot > rowPiece && isPieceInPath(board, "SE", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         return true;
     }
@@ -121,35 +121,35 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
     {
         if (rowSpot > rowPiece && colSpot == colPiece && isPieceInPath(board, "forward", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (rowSpot < rowPiece && colSpot == colPiece && isPieceInPath(board, "backward", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot > colPiece && rowSpot == rowPiece && isPieceInPath(board, "right", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot < colPiece && rowSpot == rowPiece && isPieceInPath(board, "left", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (rowSpot < rowPiece && colSpot < colPiece && isPieceInPath(board, "NW", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (rowSpot < rowPiece && colSpot > colPiece && isPieceInPath(board, "NE", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot < colPiece && rowSpot > rowPiece && isPieceInPath(board, "SW", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot > colPiece && rowSpot > rowPiece && isPieceInPath(board, "SE", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         return true;
     }
@@ -168,19 +168,19 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
     {
         if (rowSpot > rowPiece && colSpot == colPiece && isPieceInPath(board, "forward", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (rowSpot < rowPiece && colSpot == colPiece && isPieceInPath(board, "backward", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot > colPiece && rowSpot == rowPiece && isPieceInPath(board, "right", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         if (colSpot < colPiece && rowSpot == rowPiece && isPieceInPath(board, "left", rowPiece, colPiece, rowSpot, colSpot))
         {
-            return false
+            return false;
         }
         return true;
     }

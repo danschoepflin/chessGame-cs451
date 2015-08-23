@@ -41,5 +41,6 @@ function sendText(json) {
 function onMessage(evt) {
     redrawChessboard(evt.data);
     updateChat(evt.data);
+    notifyEndGame(evt.data);
 }
 
