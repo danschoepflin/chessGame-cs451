@@ -513,7 +513,6 @@ $(document).ready(function () {
                 }
             }
 
-        }
         console.log('Piece selected');
 
            // CHECK STUFF
@@ -629,7 +628,7 @@ $(document).ready(function () {
      * [Creates the flipclock]
      */
     function runTimer() {
-        var timer = $('.timer').FlipClock(1320, {
+        timer = $('.timer').FlipClock(1320, {
             clockFace: 'MinuteCounter',
             countdown: true,
             callbacks: {
@@ -639,6 +638,14 @@ $(document).ready(function () {
             }
         });
     }
+
+    /**
+     * [Confirms on refresh whether the user wants to leave the game or not]
+     */
+    $(window).bind('beforeunload', function () {
+        return 'Are you sure you want to reload this page?\n\nYou will lose this state of the board and have to restart!';
+    });
+});
 
     /**
      * [Return the current state of the table as a jQuery object]
@@ -666,11 +673,3 @@ $(document).ready(function () {
         var table = $('table')[0].outerHTML;
         return table;
     }
-
-    /**
-     * [Confirms on refresh whether the user wants to leave the game or not]
-     */
-    $(window).bind('beforeunload', function () {
-        return 'Are you sure you want to reload this page?\n\nYou will lose this state of the board and have to restart!';
-    });
-});
