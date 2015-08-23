@@ -90,6 +90,12 @@ function redrawChessboard(jsonboard) {
                     if (isCheck(board, name, color, unmoved, pieceID, kingWhiteID))
                     {
                         window.alert("The white king is in check by the " + name + " at " + pieceID);
+                        
+                        if (myMoveColor == "black")
+                        {
+                            window.alert("Black wins!");
+                            // END GAME HERE FOR BOTH PLAYERS
+                        }
                     }
                     else
                     {
@@ -104,7 +110,11 @@ function redrawChessboard(jsonboard) {
                     if (isCheck(board, name, color, unmoved, pieceID, kingBlackID))
                     {
                         window.alert("The black king is in check by the " + name + " at " + pieceID);
-                        checkFound = true;
+                        if (myMoveColor == "white")
+                        {
+                            window.alert("White wins!");
+                            // END GAME HERE FOR BOTH PLAYERS
+                        }
                     }
                     else
                     {
@@ -394,9 +404,6 @@ $(document).ready(function() {
            // CHECK STUFF
            // For all spaces in the board, check if a king is there.
            // When you find the kings, save their IDs.
-
-           window.alert("looking!");
-
            var checkFound = false;
            var kingWhiteID = 0;
            var kingBlackID = 0;
