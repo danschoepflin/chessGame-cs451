@@ -1,6 +1,4 @@
 a {
-    color:#000;
-    display:block;
     font-size:60px;
     height:80px;
     position:relative;
@@ -9,15 +7,36 @@ a {
     width:80px;
 }
 
+.infoButtonWrapper {
+    position: fixed;
+}
+
 button:focus,
 button:visited,
 button:active {
     outline: none;
 }
 
-.gameFeatures {
-    text-align: center;
-    padding: 5em 0;
+.glyphicon-info-sign {
+    color: black;
+    right: 2vw;
+    position: fixed;
+    top: 5vh;
+}
+
+
+/*
+ * Style for opening page
+ */
+
+.openingButtons {
+    width: 30vw;
+    margin: 0 auto;
+    margin-top: 1em;
+    padding: 5em;
+    border: solid 1px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 0 30px -5px rgba(0,0,0,0.4);
 }
 
 .openingButton {
@@ -32,7 +51,9 @@ button:active {
     opacity: 0.8;
 }
 
-.startButton:hover {
+.startButton:hover,
+.enterKeyButton:hover,
+.loadButton:hover {
     opacity: 1;
 }
 
@@ -40,37 +61,10 @@ button:active {
     margin: 2em 2em;
 }
 
-.chat {
-    display: none;
-    width: 100%;
-    height: 50vh;
-    border: solid 1px rgba(0,0,0,0.1);
-    border-radius: 20px;
-    box-shadow: 0 0 30px -5px rgba(0,0,0,0.2);
-}
 
-.forfeitButton,
-.saveButton {
-    width: 4em;
-    border: none;
-    border-radius: 7px;
-    color: white;
-    font-size: 2em;
-    opacity: 0.5;
-}
-
-.forfeitButton {
-    background-color: #EF0000;
-}
-
-.saveButton {
-    background-color: #084FBB;
-}
-
-.forfeitButton:hover,
-.saveButton:hover {
-    opacity: 1;
-}
+/*
+ * CSS for the Chess Board
+ */
 
 #chess_board {
     display: inline-block;
@@ -101,12 +95,6 @@ tr:nth-child(even) td:nth-child(odd) {
     -webkit-box-shadow:inset 0 0 10px rgba(0,0,0,.4);
 }
 
-.timer {
-    left: 30%;
-    zoom: 0.5;
-    -moz-transform: scale(0.8)
-}
-
 span {
     font-size: 30px;
 }
@@ -118,3 +106,52 @@ span {
 .selected {
     border: solid 2px #0084D4;
 }
+
+
+/*
+ *  For buttons and other features available while playing the game 
+ */
+
+.gameFeatures {
+    text-align: center;
+    padding: 5em 0;
+}
+
+.forfeitButton,
+.saveButton {
+    width: 4em;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    font-size: 2em;
+    opacity: 0.5;
+}
+
+.forfeitButton {
+    background-color: #EF0000;
+}
+
+.saveButton {
+    background-color: #084FBB;
+}
+
+.forfeitButton:hover,
+.saveButton:hover {
+    opacity: 1;
+}
+
+.chat {
+    display: none;
+    width: 100%;
+    height: 50vh;
+    border: solid 1px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    box-shadow: 0 0 30px -5px rgba(0,0,0,0.2);
+}
+
+.timer {
+    left: 30%;
+    zoom: 0.5;
+    -moz-transform: scale(0.8)
+}
+

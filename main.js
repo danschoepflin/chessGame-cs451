@@ -3,7 +3,7 @@
 /*global $, jQuery, alert*/
 
 $(document).ready(function () {
-    board;
+    var board;
     var selectedPiece;          /* [Holds the currently selected piece] @type {[JSON]} */
     var selectedPosition;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
@@ -115,7 +115,7 @@ $(document).ready(function () {
         var forfeitButton = '<button class="forfeitButton">Forfeit</button>';   /* [Holds the button HTML for the forfeitButton] */
         var saveButton = '<button class="saveButton">Save</button>';            /* [Holds the button HTML for the saveButton] */
 
-        $('.openingButton').remove();
+        $('.openingButtons').remove();
         $('table').fadeIn('400');
         $('.chat').fadeIn('400');
         $('.forfeitButtonDiv').append(forfeitButton);
