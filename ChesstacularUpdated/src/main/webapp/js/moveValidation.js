@@ -374,6 +374,15 @@ function isPieceInPath(board, direction, rowPiece, colPiece, rowSpot, colSpot)
     return false;
 }
 
+function isPieceColor(board, color, rowSpace, colSpace)
+{
+    if(board[rowSpace][colSpace].indexOf(color) !== -1)
+    {
+        return true;
+    }
+    return false;
+}
+
 function getCurrentBoard()
 {
     var board = [];
