@@ -10,22 +10,32 @@
         <script src="js/moveValidation.js"></script>
         <script src="main.js"></script>
         <script src="websocket.js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+
         <link rel="stylesheet" href="inc/flipclock/flipclock.css">
         <script src="inc/flipclock/flipclock.js"></script>
-
     </head>
 
     <body>
-        <button class="openingButton startButton">Start Game</button>
-        <button class="openingButton enterKeyButton">Enter key</button>
+        <a class="infoButtonWrapper" href="https://github.com/sukritchhabra/chessGame-cs451/releases" target="_blank">
+            <span class="infoButton glyphicon glyphicon-info-sign"></span>
+        </a>
+
+        <div class="openingButtons">
+            <button class="openingButton startButton">Start Game</button>
+            <button class="openingButton enterKeyButton">Enter key</button>
+            <button class="openingButton loadButton">Load Saved Game</button>
+        </div>
+
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 tableColumn"></div>
-                <div class="col-md-offset-2 col-md-4 gameFeatures">
+                <div class="col-md-offset-1 col-md-4 gameFeatures">
                     <div class="timer"></div>
-                    <div class="forfeitButtonDiv"></div>
-                    <div class="chat"></div>
+                    <div class="featureDiv chat"></div>
+                    <div class="featureDiv saveButtonDiv"></div>
+                    <div class="featureDiv forfeitButtonDiv"></div>
                 </div>
             </div>
         </div>

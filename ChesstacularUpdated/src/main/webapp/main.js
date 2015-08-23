@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -46,7 +46,7 @@ function redrawChessboard(jsonboard) {
     }
     timer.start();
     $("#chess_board").replaceWith(json.chessboard);
-    
+
     var checkFound = false;
     var kingWhiteID = 0;
     var kingBlackID = 0;
@@ -67,12 +67,12 @@ function redrawChessboard(jsonboard) {
                         {
                                 if (color === "black")
                                 {
-                                        kingBlackID = (row * 8) + col;   
-                                }   
+                                        kingBlackID = (row * 8) + col;
+                                }
                                 else
                                 {
-                                        kingWhiteID = (row * 8) + col;  
-                                }             			
+                                        kingWhiteID = (row * 8) + col;
+                                }
                         }
                         else
                         {
@@ -94,7 +94,7 @@ function redrawChessboard(jsonboard) {
             var name = piece.substr(6);
             var color = piece.substring(0,5);
             var unmoved = true;
-            var pieceID = (row * 8) + col;  
+            var pieceID = (row * 8) + col;
 
             if (name != "king")
             {
@@ -107,7 +107,7 @@ function redrawChessboard(jsonboard) {
                     if (isCheck(board, name, color, unmoved, pieceID, kingWhiteID))
                     {
                         window.alert("The white king is in check by the " + name + " at " + pieceID);
-                        
+
                         if (myMoveColor == "black")
                         {
                             window.alert("Black wins!");
@@ -147,7 +147,7 @@ function redrawChessboard(jsonboard) {
                     }
                 }
             }
-        }                    	
+        }
         if (checkFound)
         {
             $(".check").show();
@@ -157,7 +157,7 @@ function redrawChessboard(jsonboard) {
             $(".check").hide();
         }
     }
-  
+
     $('td').on('click', function() {
         timer.start();
         if(selectedPiece != undefined) {
@@ -210,7 +210,7 @@ function redrawChessboard(jsonboard) {
                     selectedPiece = undefined;
                     selectedPosition = undefined;
                     console.log('Piece selected');
-                    
+
                     var jsonToSend = JSON.stringify({
                         "chessboard" : getBoardAsHTML(),
                         "lastMoveColor" : lastMoveColor
@@ -238,15 +238,24 @@ function redrawChessboard(jsonboard) {
     });
 }
 
-$(document).ready(function() {
+
+$(document).ready(function () {
     var board;
-    var selectedPiece = undefined;          /* [Holds the currently selected piece] @type {[JSON]} */
-    var selectedPosition = undefined;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
+    var selectedPiece;          /* [Holds the currently selected piece] @type {[JSON]} */
+    var selectedPosition;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
     var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
 
+    Parse.initialize("W7MogVvTat6u5JoXgo4qP5qqB5ldvH4sWrvPmkB3", "oCxcrfx1IJ8yBz24rxkRBiAuh7xbOxe5ycJ5Gh8C");
+
+
     createTable();
 
+    /**
+     * [Function that created the chess board table to start the game.]
+     *  NOTE:  This function is only for starting a new game. If loadGame is chosen, the table is pulled from the database
+     *         and appended to the column.
+     */
     function createTable() {
         var newHtml = '';
         newHtml = newHtml + '<table id="chess_board" style="display: none;">';
@@ -332,17 +341,23 @@ $(document).ready(function() {
         newHtml = newHtml + '</tr>';
         newHtml = newHtml + '</table>';
         $('.tableColumn').append(newHtml);
-
     }
 
-    $('.startButton').on('click', function(event) {
+    /**
+     * [Listening for a click on the .startButton. Clicking this removes the opening screen and creates the game screen]
+     * @triggers: startGame {body} [Event triggered to notify that the game has been started]
+     */
+    $('.startButton').on('click', function () {
         $('body').trigger('startGame');
-        var forfeitButton = '<button class="forfeitButton">Forfeit</button>';
+        var forfeitButton = '<button class="forfeitButton">Forfeit</button>';   /* [Holds the button HTML for the forfeitButton] */
+        var saveButton = '<button class="saveButton">Save</button>';            /* [Holds the button HTML for the saveButton] */
 
-        $('.openingButton').remove();
+        $('.openingButtons').remove();
         $('table').fadeIn('400');
+        $('.chat').fadeIn('400');
         $('.forfeitButtonDiv').append(forfeitButton);
-        
+        $('.saveButtonDiv').append(saveButton);
+
         var chatDiv = $('.chat');
         var chatSendButton = '<button class="chatButton">Send Message</button>';
         chatDiv.append(chatSendButton);
@@ -352,8 +367,13 @@ $(document).ready(function() {
         timer.stop();
     });
 
-    $('body').on('click', '.forfeitButton', function(event) {
-        var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');
+    /**
+     * [Listening for a click on the .forfeitButton. Clicking this ends the game(without saving it) and takes the user to the end screen]
+     * @triggers: endGame {body} [Event triggered to notify that endGame condition has been met]
+     */
+    $('body').on('click', '.forfeitButton', function () {
+        console.log(getBoardAsHTML());
+        var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');     /* Holding the boolean return based on what the user chose */
         if (c) {
             $('body').trigger('endGame');
             var colorToSend;
@@ -378,19 +398,76 @@ $(document).ready(function() {
         sendText(json);
     });
 
-    $('td').on('click', function() {
+    /**
+     * [Listening for a click on the .saveButton. Clicking this saves the current table to the database which can be retrieved on load.]
+     * NOTE: This also gives the user a key which is specific to the board they saved to retrieve their saved game later.
+     * @triggers: none;
+     */
+    $('body').on('click', '.saveButton', function () {
+        var c = confirm('Are you sure you want to QUIT the game and SAVE it for later?');   /* Holding the boolean return based on what the user chose */
+
+        if (c) {
+            var ChessBoard = Parse.Object.extend("ChessBoard");     /* Creating a subclass of the class ChessBoard */
+            board = new ChessBoard();                           /* Creating a new Object of this subclass ChessBoard */
+
+            board.set("savedBoard", getBoardAsHTML());
+            board.save(null, {
+                success: function (board) {
+                    // Execute any logic that should take place after the object is saved.
+                    alert('Please save this key to load this game later: \n' + board.id);
+                },
+                error: function (board, error) {
+                    // Execute any logic that should take place if the save fails.
+                    // error is a Parse.Error with an error code and message.
+                    alert('Save Failed: ' + error.message);
+                }
+            });
+        }
+    });
+
+    /**
+     * [Listening for a click on the .loadButton. Clicking this allows the user to load an already saved board.]
+     * NOTE: This also a key from the user which is specific to the board they saved.
+     * @triggers: click {.startButton} [Triggers this click to render the board that has been loaded]
+     */
+    $('body').on('click', '.loadButton', function () {
+        var ChessBoard = Parse.Object.extend("ChessBoard");             /* Creating a subclass of the class ChessBoard */
+        var query = new Parse.Query(ChessBoard);                        /* Creating a new Query Object of this subclass ChessBoard */
+        var key = window.prompt("Please enter you key her:", "[key]");  /* Taking the key input from the user */
+        query.get(key, {
+            success: function (board) {
+                var newBoard = board.get("savedBoard");
+                console.log(newBoard);
+                $('table').remove();
+                $('.tableColumn').append(newBoard);
+                $('.startButton').trigger('click');
+            },
+            error: function (object, error) {
+            // The object was not retrieved successfully.
+            // error is a Parse.Error with an error code and message.
+            }
+        });
+    });
+
+    /**
+     * [Detecting click on the pieces/spaces on the board. This is also calling the moveValidation to check if a move is valid or not
+     *  and performing moves based on the return from isValidMove()]
+     */
+    $('td').on('click', function () {
         timer.start();
-        if(selectedPiece != undefined) {
+        if (selectedPiece !== undefined) {
             selectedPosition = $(this);
 
-            var condition_selectingSamePiece = selectedPiece.attr('id') != selectedPosition.attr('id');
-            var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
-                //condition_selectingSameColor: Checking if the piece you're moving to is of the same color
+            var condition_selectingSamePiece = selectedPiece.attr('id') !== selectedPosition.attr('id');
+            /* Same piece selected or not */
+            var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') !== $(this).find('span').attr('data-color');
+            /* Same color selected or not */
+
             if (!condition_selectingSamePiece) {
                 selectedPiece.removeClass('selected');
                 selectedPiece = undefined;
                 selectedPosition = undefined;
-                if (lastMoveColor == 'white') {
+                if (lastMoveColor === 'white') {
                     lastMoveColor = 'black';
                 } else {
                     lastMoveColor = 'white';
@@ -402,12 +479,12 @@ $(document).ready(function() {
                 var idNumberSpot = selectedPosition.attr('id');
                 var color = selectedPiece.find("span").attr('data-color');
                 var isFirstMove = selectedPiece.find("span").hasClass('unmoved') ? true : false;
-                if(isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
+                if (isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
                 {
                     var block = selectedPosition.find('span');
                     var tempClass = block.attr('class');
 
-                    if (tempClass != undefined) {
+                    if (tempClass !== undefined) {
                         block.removeClass(tempClass);
                     }
 
@@ -419,6 +496,7 @@ $(document).ready(function() {
                     block.attr('data-color', newColor);
                     block.attr('data-piece', newPiece);
 
+                    /* Resetting the board to have no selectedPiece and selectedPosition and removing all their attributes. */
                     selectedPiece.find('span').removeClass(fullClass);
                     selectedPiece.removeClass('selected');
                     selectedPiece.find('span').attr('data-color', '');
@@ -434,8 +512,10 @@ $(document).ready(function() {
                     timer.stop();
                 }
             }
-            console.log('Piece selected');           
-            
+
+        }
+        console.log('Piece selected');
+
            // CHECK STUFF
            // For all spaces in the board, check if a king is there.
            // When you find the kings, save their IDs.
@@ -459,12 +539,12 @@ $(document).ready(function() {
                                {
                                        if (color === "black")
                                        {
-                                               kingBlackID = (row * 8) + col;   
-                                       }   
+                                               kingBlackID = (row * 8) + col;
+                                       }
                                        else
                                        {
-                                               kingWhiteID = (row * 8) + col;  
-                                       }             			
+                                               kingWhiteID = (row * 8) + col;
+                                       }
                                }
                                else
                                {
@@ -486,7 +566,7 @@ $(document).ready(function() {
                     var name = piece.substr(6);
                     var color = piece.substring(0,5);
                     var unmoved = true;
-                    var pieceID = (row * 8) + col;  
+                    var pieceID = (row * 8) + col;
 
                     if (name != "king")
                     {
@@ -521,7 +601,7 @@ $(document).ready(function() {
                             }
                         }
                     }
-                }                    	
+                }
                 if (checkFound)
                 {
                     $(".check").show();
@@ -532,52 +612,65 @@ $(document).ready(function() {
                 }
             }
         }
-
         else {
             console.log('selecting first piece');
-            if($(this).find('span').hasClass('glyphicon')) {
-                if($(this).find('span').attr('data-color') != lastMoveColor && (typeof myMoveColor  === 'undefined' || $(this).find('span').attr('data-color') === myMoveColor)) {
+            if ($(this).find('span').hasClass('glyphicon')) {
+                if ($(this).find('span').attr('data-color') !== lastMoveColor) {
                     selectedPiece = $(this);
                     selectedPiece.addClass('selected');
                     fullClass = $(this).find('span').attr('class');
                     lastMoveColor = $(this).find('span').attr('data-color');
-                    if(typeof myMoveColor === 'undefined') {
-                        myMoveColor = selectedPiece.find('span').attr('data-color');
-                    }
                 }
             }
         }
     });
 
-
+    /**
+     * [Creates the flipclock]
+     */
     function runTimer() {
-        timer = $('.timer').FlipClock(1320, {
+        var timer = $('.timer').FlipClock(1320, {
             clockFace: 'MinuteCounter',
             countdown: true,
             callbacks: {
-                stop: function() {
+                stop: function () {
                     $('.message').html('The clock has stopped!');
                 }
             }
         });
     }
 
-    $(window).bind('beforeunload',function(){
+    /**
+     * [Return the current state of the table as a jQuery object]
+     * @return {[Object]} [A jQuery object of the table]
+     */
+    function getBoardAsJQuery() {
+        var table = $('table');
+        return table;
+    }
+
+    /**
+     * [Return the current state of the table as a JSON object]
+     * @return {[JSON]} [A JSON object of the table]
+     */
+    function getBoardAsJSON() {
+        var table = $('table')[0];
+        return table;
+    }
+
+    /**
+     * [Return the current state of the table as a HTML string]
+     * @return {[String]} [The table HTML as a string]
+     */
+    function getBoardAsHTML() {
+        var table = $('table')[0].outerHTML;
+        return table;
+    }
+
+    /**
+     * [Confirms on refresh whether the user wants to leave the game or not]
+     */
+    $(window).bind('beforeunload', function () {
         return 'Are you sure you want to reload this page?\n\nYou will lose this state of the board and have to restart!';
     });
 });
-
-function getBoardAsJQuery() {
-    var table = $('table');
-    return table;
-}
-
-function getBoardAsJSON() {
-    var table = $('table')[0];
-    return table;
-}
-
-function getBoardAsHTML() {
-    var table = $('table')[0].outerHTML;
-    return table;
-}
