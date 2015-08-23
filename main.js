@@ -2,10 +2,10 @@
 /*jslint node: true*/
 /*global $, jQuery, alert*/
 
-$(document).ready(function() {
-    var board;
-    var selectedPiece = undefined;          /* [Holds the currently selected piece] @type {[JSON]} */
-    var selectedPosition = undefined;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
+$(document).ready(function () {
+    board;
+    var selectedPiece;          /* [Holds the currently selected piece] @type {[JSON]} */
+    var selectedPosition;       /* [Holds the position where the selected piece is to be moved] @type {[JSON]} */
     var fullClass;                          /* [Holds all classes of the selected piece] @type {[String]} */
     var lastMoveColor;                      /* [What was the color of the last piece that was moved] @type {[String]} */
 
@@ -110,7 +110,7 @@ $(document).ready(function() {
      * [Listening for a click on the .startButton. Clicking this removes the opening screen and creates the game screen]
      * @triggers: startGame {body} [Event triggered to notify that the game has been started]
      */
-    $('.startButton').on('click', function(event) {
+    $('.startButton').on('click', function () {
         $('body').trigger('startGame');
         var forfeitButton = '<button class="forfeitButton">Forfeit</button>';   /* [Holds the button HTML for the forfeitButton] */
         var saveButton = '<button class="saveButton">Save</button>';            /* [Holds the button HTML for the saveButton] */
@@ -127,7 +127,7 @@ $(document).ready(function() {
      * [Listening for a click on the .forfeitButton. Clicking this ends the game(without saving it) and takes the user to the end screen]
      * @triggers: endGame {body} [Event triggered to notify that endGame condition has been met]
      */
-    $('body').on('click', '.forfeitButton', function(event) {
+    $('body').on('click', '.forfeitButton', function () {
         console.log(getBoardAsHTML());
         var c = confirm('Are you sure you want to QUIT the game and FORFEIT?');     /* Holding the boolean return based on what the user chose */
         if (c) {
@@ -140,20 +140,20 @@ $(document).ready(function() {
      * NOTE: This also gives the user a key which is specific to the board they saved to retrieve their saved game later.
      * @triggers: none;
      */
-    $('body').on('click', '.saveButton', function(event) {
+    $('body').on('click', '.saveButton', function () {
         var c = confirm('Are you sure you want to QUIT the game and SAVE it for later?');   /* Holding the boolean return based on what the user chose */
 
         if (c) {
             var ChessBoard = Parse.Object.extend("ChessBoard");     /* Creating a subclass of the class ChessBoard */
-            var board = new ChessBoard();                           /* Creating a new Object of this subclass ChessBoard */
+            board = new ChessBoard();                           /* Creating a new Object of this subclass ChessBoard */
 
             board.set("savedBoard", getBoardAsHTML());
             board.save(null, {
-                success: function(board) {
+                success: function (board) {
                     // Execute any logic that should take place after the object is saved.
                     alert('Please save this key to load this game later: \n' + board.id);
                 },
-                error: function(board, error) {
+                error: function (board, error) {
                     // Execute any logic that should take place if the save fails.
                     // error is a Parse.Error with an error code and message.
                     alert('Save Failed: ' + error.message);
@@ -167,19 +167,19 @@ $(document).ready(function() {
      * NOTE: This also a key from the user which is specific to the board they saved.
      * @triggers: click {.startButton} [Triggers this click to render the board that has been loaded]
      */
-    $('body').on('click', '.loadButton', function(event) {
+    $('body').on('click', '.loadButton', function () {
         var ChessBoard = Parse.Object.extend("ChessBoard");             /* Creating a subclass of the class ChessBoard */
         var query = new Parse.Query(ChessBoard);                        /* Creating a new Query Object of this subclass ChessBoard */
-        var key = window.prompt("Please enter you key her:", "[key]")   /* Taking the key input from the user */
+        var key = window.prompt("Please enter you key her:", "[key]");  /* Taking the key input from the user */
         query.get(key, {
-            success: function(board) {
+            success: function (board) {
                 var newBoard = board.get("savedBoard");
                 console.log(newBoard);
                 $('table').remove();
                 $('.tableColumn').append(newBoard);
                 $('.startButton').trigger('click');
             },
-            error: function(object, error) {
+            error: function (object, error) {
             // The object was not retrieved successfully.
             // error is a Parse.Error with an error code and message.
             }
@@ -190,64 +190,63 @@ $(document).ready(function() {
      * [Detecting click on the pieces/spaces on the board. This is also calling the moveValidation to check if a move is valid or not
      *  and performing moves based on the return from isValidMove()]
      */
-    $('td').on('click', function() {
-        if(selectedPiece != undefined) {
+    $('td').on('click', function () {
+        if (selectedPiece !== undefined) {
             selectedPosition = $(this);
 
-            var condition_selectingSamePiece = selectedPiece.attr('id') != selectedPosition.attr('id');
+            var condition_selectingSamePiece = selectedPiece.attr('id') !== selectedPosition.attr('id');
             /* Same piece selected or not */
-            var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') != $(this).find('span').attr('data-color');
+            var condition_selectingSameColor = selectedPiece.find('span').attr('data-color') !== $(this).find('span').attr('data-color');
             /* Same color selected or not */
 
             if (!condition_selectingSamePiece) {
                 selectedPiece.removeClass('selected');
                 selectedPiece = undefined;
                 selectedPosition = undefined;
-                if (lastMoveColor == 'white') {
+                if (lastMoveColor === 'white') {
                     lastMoveColor = 'black';
                 } else {
                     lastMoveColor = 'white';
                 }
-            }  else if (condition_selectingSamePiece && condition_selectingSameColor) {
-                 board = getCurrentBoard();
-                 var pieceType = selectedPiece.find("span").attr('data-piece');
-                 var idNumberPiece = selectedPiece.attr('id');
-                 var idNumberSpot = selectedPosition.attr('id');
-                 var color = selectedPiece.find("span").attr('data-color');
-                 var isFirstMove = selectedPiece.find("span").hasClass('unmoved') ? true : false;
-                 if(isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
-                 {
-                     var block = selectedPosition.find('span');
-                     var tempClass = block.attr('class');
+            } else if (condition_selectingSamePiece && condition_selectingSameColor) {
+                board = getCurrentBoard();
+                var pieceType = selectedPiece.find("span").attr('data-piece');
+                var idNumberPiece = selectedPiece.attr('id');
+                var idNumberSpot = selectedPosition.attr('id');
+                var color = selectedPiece.find("span").attr('data-color');
+                var isFirstMove = selectedPiece.find("span").hasClass('unmoved') ? true : false;
+                if (isValidMove(board, pieceType, color, isFirstMove, idNumberPiece, idNumberSpot))
+                {
+                    var block = selectedPosition.find('span');
+                    var tempClass = block.attr('class');
 
-                     if (tempClass != undefined) {
-                         block.removeClass(tempClass);
-                     }
+                    if (tempClass !== undefined) {
+                        block.removeClass(tempClass);
+                    }
 
-                     block.addClass(fullClass);
-                     block.removeClass('unmoved');
+                    block.addClass(fullClass);
+                    block.removeClass('unmoved');
 
-                     var newColor = selectedPiece.find('span').data('color');
-                     var newPiece = selectedPiece.find('span').data('piece');
-                     block.attr('data-color', newColor);
-                     block.attr('data-piece', newPiece);
+                    var newColor = selectedPiece.find('span').data('color');
+                    var newPiece = selectedPiece.find('span').data('piece');
+                    block.attr('data-color', newColor);
+                    block.attr('data-piece', newPiece);
 
-                     /* Resetting the board to have no selectedPiece and selectedPosition and removing all their attributes. */
-                     selectedPiece.find('span').removeClass(fullClass);
-                     selectedPiece.removeClass('selected');
-                     selectedPiece.find('span').attr('data-color', '');
-                     selectedPiece.find('span').attr('data-piece', '');
+                    /* Resetting the board to have no selectedPiece and selectedPosition and removing all their attributes. */
+                    selectedPiece.find('span').removeClass(fullClass);
+                    selectedPiece.removeClass('selected');
+                    selectedPiece.find('span').attr('data-color', '');
+                    selectedPiece.find('span').attr('data-piece', '');
 
-                     selectedPiece = undefined;
-                     selectedPosition = undefined;
-                 }
-
-             }
+                    selectedPiece = undefined;
+                    selectedPosition = undefined;
+                }
+            }
 
         } else {
             console.log('selecting first piece');
-            if($(this).find('span').hasClass('glyphicon')) {
-                if($(this).find('span').attr('data-color') != lastMoveColor) {
+            if ($(this).find('span').hasClass('glyphicon')) {
+                if ($(this).find('span').attr('data-color') !== lastMoveColor) {
                     selectedPiece = $(this);
                     selectedPiece.addClass('selected');
                     fullClass = $(this).find('span').attr('class');
@@ -265,7 +264,7 @@ $(document).ready(function() {
             clockFace: 'MinuteCounter',
             countdown: true,
             callbacks: {
-                stop: function() {
+                stop: function () {
                     $('.message').html('The clock has stopped!');
                 }
             }
@@ -302,7 +301,7 @@ $(document).ready(function() {
     /**
      * [Confirms on refresh whether the user wants to leave the game or not]
      */
-    $(window).bind('beforeunload',function(){
+    $(window).bind('beforeunload', function () {
         return 'Are you sure you want to reload this page?\n\nYou will lose this state of the board and have to restart!';
     });
 });
