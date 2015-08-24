@@ -318,6 +318,7 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
 
                 selectedPiece.find('span').attr('data-piece', '');
 
+                return true;
         }
 
         else if(Math.abs(rowPiece - rowSpot) <= 1 && Math.abs(colPiece - colSpot) <= 1)
