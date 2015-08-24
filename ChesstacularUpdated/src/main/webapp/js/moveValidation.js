@@ -154,9 +154,182 @@ function isValidMove(board, pieceType, pieceColor, unmoved, idNumberPiece, idNum
         return true;
     }
 
-    if((pieceType == "king") && ((Math.abs(rowPiece - rowSpot) <= 1 && Math.abs(colPiece - colSpot) <= 1)))
+    if(pieceType == "king")
+
     {
-        return true;
+
+        var direction;
+
+        if(colPiece < colSpot)
+
+        {
+            direction = "castling right";
+
+        }
+
+        else
+
+        {
+
+            direction = "castling left";
+
+        }
+
+        var closestCastle;
+
+        if(direction == "castling right")
+
+        {
+           closestCastle = idNumPiece + 3; 
+
+        }
+
+        else
+
+        {
+
+            closestCastle = idNumPiece - 4;
+
+        }
+
+        var isPathClear = isPieceInPath(board, direction, rowPiece, colPiece, rowSpot, colSpot);
+
+        var castleId = "#" + closestCastle.toString();
+
+        var isCastleUnmoved = $(castleId).find('span').hasClass("unmoved");
+
+        console.log(unmoved);
+        console.log(isPathClear);
+        console.log(isCastleUnmoved);
+        if(unmoved && isPathClear && isCastleUnmoved)
+
+        {
+                var selectedPiece = $("#" + idNumberPiece);
+
+                var selectedPosition = $("#" + idNumberSpot);
+
+                var block = selectedPosition.find('span');
+
+                var tempClass = block.attr('class');
+
+                var fullClass = selectedPiece.find('span').attr('class');
+
+                
+
+                if (tempClass !== undefined) {
+
+                    block.removeClass(tempClass);
+
+                }
+
+                
+
+                block.addClass(fullClass);
+
+                block.removeClass('unmoved');
+
+                
+
+                var newColor = selectedPiece.find('span').data('color');
+
+                var newPiece = selectedPiece.find('span').data('piece');
+
+                block.attr('data-color', newColor);
+
+                block.attr('data-piece', newPiece);
+
+                
+
+                /* Resetting the board to have no selectedPiece and selectedPosition and removing all their attributes. */
+
+                selectedPiece.find('span').removeClass(fullClass);
+
+                selectedPiece.removeClass('selected');
+
+                selectedPiece.find('span').attr('data-color', '');
+
+                selectedPiece.find('span').attr('data-piece', '');
+
+                
+
+                
+
+                var newCastleSpot;
+
+                if (direction == "castling right")
+
+                {
+                    console.log('got all the way here');
+                    newCastleSpot = closestCastle - 2;
+
+                }
+
+                else
+
+                {
+
+                    newCastleSpot = closestCastle + 3;
+
+                }
+
+                selectedPiece = $("#" + closestCastle);
+
+                selectedPosition = $("#" + newCastleSpot.toString());
+
+                block = selectedPosition.find('span');
+
+                tempClass = block.attr('class');
+
+                fullClass = selectedPiece.find('span').attr('class');
+
+                
+
+                if (tempClass !== undefined) {
+
+                    block.removeClass(tempClass);
+
+                }
+
+                
+
+                block.addClass(fullClass);
+
+                block.removeClass('unmoved');
+
+                
+
+                var newColor = selectedPiece.find('span').data('color');
+
+                var newPiece = selectedPiece.find('span').data('piece');
+
+                block.attr('data-color', newColor);
+
+                block.attr('data-piece', newPiece);
+
+                
+
+                /* Resetting the board to have no selectedPiece and selectedPosition and removing all their attributes. */
+
+                selectedPiece.find('span').removeClass(fullClass);
+
+                selectedPiece.removeClass('selected');
+
+                selectedPiece.find('span').attr('data-color', '');
+
+                selectedPiece.find('span').attr('data-piece', '');
+
+        }
+
+        else if(Math.abs(rowPiece - rowSpot) <= 1 && Math.abs(colPiece - colSpot) <= 1)
+
+        {
+
+            return true;
+
+        }
+
+        
+
     }
 
     if((pieceType == "knight") && ((Math.abs(rowPiece - rowSpot) == 1 && Math.abs(colPiece - colSpot) == 2) || (Math.abs(colPiece - colSpot) == 1 && Math.abs(rowPiece - rowSpot) == 2)))
@@ -265,6 +438,27 @@ function isCaptureTerritory(board, rowPiece, colPiece, pieceColor)
 
 function isPieceInPath(board, direction, rowPiece, colPiece, rowSpot, colSpot)
 {
+    if(direction == "castling right")
+    {
+        var colPiece2 = colPiece + 1;
+        var colPiece3 = colPiece2 + 1;
+        if((board[rowPiece][colPiece2] == "") && (board[rowPiece][colPiece3] == ""))
+        {
+            return true;
+        }
+    }
+
+    
+
+    if(direction == "castling left")
+    {
+        var colPiece2 = colPiece - 1;
+        var colPiece3 = colPiece2 - 1;
+        if((board[rowPiece][colPiece2] == "") && (board[rowPiece][colPiece3] == ""))
+        {
+            return true;
+        }
+    }
     
     if(direction == "forward")
     {
